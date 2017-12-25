@@ -7,6 +7,7 @@ import {
   RECEIVE_STOPWATCH_TIME,
   RECEIVE_STOPWATCH_NAME,
   DELETE_ROW,
+  RECEIVE_STOPWATCH_TYPE,
 } from './constants';
 
 export const toggleEditMode = () => ({
@@ -40,6 +41,12 @@ export const receiveStopwatchName = (newName, rowIdx) => ({
   type: RECEIVE_STOPWATCH_NAME,
   newName,
   rowIdx,
+});
+
+export const receiveStopwatchType = (newType, colIdx) => ({
+  type: RECEIVE_STOPWATCH_TYPE,
+  newType,
+  colIdx,
 });
 
 export const deleteRow = rowIdx => ({

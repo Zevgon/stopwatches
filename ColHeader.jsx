@@ -3,6 +3,9 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import {
+  receiveStopwatchType,
+} from './actions';
 
 class ColHeader extends Component {
   constructor(props) {
@@ -34,10 +37,7 @@ class ColHeader extends Component {
         return;
       }
 
-      const { onUpdateHeader } = this.props;
-      if (typeof onUpdateHeader === 'function') {
-        onUpdateHeader(this.state.header, this.props.colIdx);
-      }
+      this.props.dispatch(receiveStopwatchType(this.state.header, this.props.colIdx));
     });
   }
 

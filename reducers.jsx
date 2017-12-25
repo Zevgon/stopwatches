@@ -8,32 +8,13 @@ import {
   RECEIVE_STOPWATCH_TIME,
   RECEIVE_STOPWATCH_NAME,
   DELETE_ROW,
+  RECEIVE_STOPWATCH_TYPE,
 } from './constants';
-import ColHeader from './ColHeader';
-import StopWatch from './StopWatch';
+import {
+  createColumn,
+  createRow,
+} from './utils';
 
-export const createRow = (numStopwatchCols, name) => {
-  const colIdToDefaultStopwatchVal = {};
-  for (let i = 0; i < numStopwatchCols; i += 1) {
-    colIdToDefaultStopwatchVal[`col-${i + 1}`] = 0;
-  }
-  return {
-    name,
-    ...colIdToDefaultStopwatchVal,
-  };
-};
-
-const createColumn = (header, colIdx, onStopwatchChange, onUpdateHeader) => ({
-  Header: () => (
-    <ColHeader
-      header={header}
-      colIdx={colIdx}
-      onUpdateHeader={onUpdateHeader}
-    />
-  ),
-  accessor: `col-${colIdx}`,
-  Cell: props => <StopWatch {...props} />,
-});
 
 export const editModeReducer = (state = false, action) => {
   switch (action.type) {
@@ -82,6 +63,12 @@ export const colReducer = (state = [], action) => {
     case CREATE_NEW_COL: {
       const newColumn = createColumn('Stopwatch Type', action.numCols, action.onStopwatchChange);
       return state.concat([newColumn]);
+    }
+    case RECEIVE_STOPWATCH_TYPE: {
+      const newCols = cloneDeep(state);
+      const { colIdx, newType } = action;
+      newCols[colIdx] = createColumn(newType, colIdx);
+      return newCols;
     }
     default:
       return state;

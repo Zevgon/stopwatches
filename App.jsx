@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
-import { merge } from 'lodash';
 import { connect } from 'react-redux';
 import {
   toggleEditMode,
@@ -9,45 +8,20 @@ import {
   createNewRow,
   createNewCol,
 } from './actions';
-import { createRow } from './reducers';
-import StopWatch from './StopWatch';
-import ColHeader from './ColHeader';
-import RowHeader from './RowHeader';
+import {
+  createColumn,
+  createFirstColumn,
+  createRow,
+} from './utils';
 import './master.css';
-
-const createFirstColumn = (onUpdateName, onDeleteRow) => ({
-  Header: 'Name',
-  accessor: 'name',
-  Cell: ({ value, ...rest }) => (
-    <RowHeader
-      key={value}
-      name={value}
-      onUpdateName={onUpdateName}
-      onDeleteRow={onDeleteRow}
-      {...rest}
-    />
-  ),
-});
-
-const createColumn = (header, colIdx, onStopwatchChange, onUpdateHeader) => ({
-  Header: () => (
-    <ColHeader
-      header={header}
-      colIdx={colIdx}
-      onUpdateHeader={onUpdateHeader}
-    />
-  ),
-  accessor: `col-${colIdx}`,
-  Cell: props => <StopWatch onChange={onStopwatchChange} {...props} />,
-});
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     const { data: { columns, rows } } = props;
     const dataColumns = columns || [
-      createFirstColumn(this.onUpdateName, this.onDeleteRow),
-      createColumn('Stuffing', 1, this.onStopwatchChange, this.onUpdateHeader),
+      createFirstColumn(),
+      createColumn('Stuffing', 1),
     ];
 
     const dataRows = rows || [createRow(dataColumns.length - 1, 'Turkey baking')];
@@ -61,34 +35,6 @@ class App extends React.Component {
 
   componentWillUnmount() {
     localStorage.setItem('savable-timer-data', JSON.stringify(this.state.data));
-  }
-
-  onUpdateHeader = (newHeader, colIdx) => {
-    const newCols = [...this.state.data.columns];
-    newCols[colIdx] = createColumn(newHeader, colIdx, this.onStopwatchChange, this.onUpdateHeader);
-    this.setState(merge({}, this.state, { data: { columns: newCols } }));
-  }
-
-  onUpdateName = (newName, rowIdx) => {
-    const newRows = [...this.state.data.rows];
-    newRows[rowIdx] = {
-      ...newRows[rowIdx],
-      name: newName,
-    };
-    this.setState(merge({}, this.state, { data: { rows: newRows } }));
-  }
-
-  onDeleteRow = (rowIdx) => {
-    const rows = this.state.data.rows.map(row => ({ ...row }));
-    if (rows.length === 1) return;
-
-    const newRows = rows.slice(0, rowIdx).concat(rows.slice(rowIdx + 1));
-    this.setState({
-      data: {
-        ...this.state.data,
-        rows: newRows,
-      },
-    });
   }
 
   addRow = () => {
