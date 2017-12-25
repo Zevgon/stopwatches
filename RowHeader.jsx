@@ -21,7 +21,7 @@ export default class RowHeader extends Component {
 
       const { onUpdateName } = this.props;
       if (typeof onUpdateName === 'function') {
-        onUpdateName(this.state.name, this.props.rowIdx);
+        onUpdateName(this.state.name, this.props.index);
       }
     });
   }

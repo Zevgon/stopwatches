@@ -9,10 +9,11 @@ import RowHeader from './RowHeader';
 const createFirstColumn = onUpdateName => ({
   Header: 'Name',
   accessor: 'name',
-  Cell: props => (
+  Cell: ({ value, ...rest }) => (
     <RowHeader
-      name={props.value}
+      name={value}
       onUpdateName={onUpdateName}
+      {...rest}
     />
   ),
 });
@@ -74,8 +75,17 @@ export default class App extends React.Component {
     this.setState(merge({}, this.state, { data: { columns: newCols } }));
   }
 
+  onUpdateName = (newName, rowIdx) => {
+    const newRows = [...this.state.data.rows];
+    newRows[rowIdx] = {
+      name: newName,
+      ...newRows[rowIdx],
+    };
+    this.setState(merge({}, this.state, { data: { rows: newRows } }));
+  }
+
   addRow = () => {
-    const newRow = createRow(this.state.data.columns.length - 1);
+    const newRow = createRow(this.state.data.columns.length - 1, 'Stopwatch name');
     const newRows = this.state.data.rows.concat([newRow]);
     this.setState(merge({}, this.state, { data: { rows: newRows } }));
   }
