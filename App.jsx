@@ -4,11 +4,18 @@ import 'react-table/react-table.css';
 import { merge } from 'lodash';
 import StopWatch from './StopWatch';
 import ColHeader from './ColHeader';
+import RowHeader from './RowHeader';
 
-const FIRST_COLUMN = {
+const createFirstColumn = onUpdateName => ({
   Header: 'Name',
   accessor: 'name',
-};
+  Cell: props => (
+    <RowHeader
+      name={props.value}
+      onUpdateName={onUpdateName}
+    />
+  ),
+});
 
 const createColumn = (header, colIdx, onStopwatchChange, onUpdateHeader) => ({
   Header: () => (
@@ -22,18 +29,13 @@ const createColumn = (header, colIdx, onStopwatchChange, onUpdateHeader) => ({
   Cell: props => <StopWatch onChange={onStopwatchChange} {...props} />,
 });
 
-const EXAMPLE_TIMER = {
-  name: 'Turkey baking',
-  'col-1': 0,
-};
-
-const createRow = (numStopwatchCols) => {
+const createRow = (numStopwatchCols, name) => {
   const defaultStopwatchCols = {};
   for (let i = 0; i < numStopwatchCols; i += 1) {
     defaultStopwatchCols[`col-${i + 1}`] = 0;
   }
   return {
-    name: 'Stopwatch name',
+    name,
     ...defaultStopwatchCols,
   };
 };
@@ -43,13 +45,13 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     const { data: { columns, rows } } = props;
+    const dataColumns = columns || [
+      createFirstColumn(this.onUpdateName),
+      createColumn('Stopwatch Type', 1, this.onStopwatchChange, this.onUpdateHeader),
+    ];
     const data = {
-      columns: columns ||
-        [
-          FIRST_COLUMN,
-          createColumn('Stopwatch Type', 1, this.onStopwatchChange, this.onUpdateHeader),
-        ],
-      rows: rows || [EXAMPLE_TIMER],
+      columns: dataColumns,
+      rows: rows || [createRow(dataColumns.length - 1, 'Turkey baking')],
     };
     this.state = { data };
   }
