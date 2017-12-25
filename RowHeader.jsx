@@ -3,6 +3,10 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import {
+  receiveStopwatchName,
+  deleteRow,
+} from './actions';
 
 class RowHeader extends Component {
   constructor(props) {
@@ -24,19 +28,20 @@ class RowHeader extends Component {
         return;
       }
 
-      const { onUpdateName } = this.props;
-      if (typeof onUpdateName === 'function') {
-        onUpdateName(this.state.name, this.props.index);
-      }
+      this.props.dispatch(receiveStopwatchName(this.state.name, this.props.index));
     });
   }
 
   updateName = (e) => { this.setState({ name: e.target.value }); }
 
-  handleKeyUp = (e) => {
-    if (e.which === 13) {
-      this.toggleEditName();
-    }
+  handleKeyUp = (e) => { if (e.which === 13) { this.toggleEditName(); } }
+
+  deleteRow = () => {
+    // const { onDeleteRow } = this.props;
+    // if (typeof onDeleteRow === 'function') {
+    //   onDeleteRow(this.props.index);
+    // }
+    this.props.dispatch(deleteRow(this.props.index));
   }
 
   render() {
@@ -56,10 +61,14 @@ class RowHeader extends Component {
           <span>{name}</span>
         }
         {editMode ?
-          <i
-            className={this.state.editingName ? 'fa fa-floppy-o' : 'fa fa-pencil-square-o'}
-            onClick={this.toggleEditName}
-          /> : <div />
+          <div className="space-between">
+            <button onClick={this.deleteRow}>Delete Row</button>
+            <i
+              className={this.state.editingName ? 'fa fa-floppy-o' : 'fa fa-pencil-square-o'}
+              onClick={this.toggleEditName}
+            />
+          </div>
+          : <div />
         }
       </div>
     );

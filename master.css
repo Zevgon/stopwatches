@@ -1,4 +1,14 @@
+body, button, div {
+  outline: none;
+}
+
+
 .space-between {
   display: flex;
   justify-content: space-between;
+}
+
+button.editing {
+  background-color: blue;
+  color: white;
 }

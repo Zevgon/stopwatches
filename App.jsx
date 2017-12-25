@@ -3,19 +3,26 @@ import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import { merge } from 'lodash';
 import { connect } from 'react-redux';
-import { toggleEditMode } from './actions';
+import {
+  toggleEditMode,
+  receiveData,
+  createNewRow,
+  createNewCol,
+} from './actions';
+import { createRow } from './reducers';
 import StopWatch from './StopWatch';
 import ColHeader from './ColHeader';
 import RowHeader from './RowHeader';
 import './master.css';
 
-const createFirstColumn = onUpdateName => ({
+const createFirstColumn = (onUpdateName, onDeleteRow) => ({
   Header: 'Name',
   accessor: 'name',
   Cell: ({ value, ...rest }) => (
     <RowHeader
       name={value}
       onUpdateName={onUpdateName}
+      onDeleteRow={onDeleteRow}
       {...rest}
     />
   ),
@@ -33,43 +40,26 @@ const createColumn = (header, colIdx, onStopwatchChange, onUpdateHeader) => ({
   Cell: props => <StopWatch onChange={onStopwatchChange} {...props} />,
 });
 
-const createRow = (numStopwatchCols, name) => {
-  const colIdToDefaultStopwatchVal = {};
-  for (let i = 0; i < numStopwatchCols; i += 1) {
-    colIdToDefaultStopwatchVal[`col-${i + 1}`] = 0;
-  }
-  return {
-    name,
-    ...colIdToDefaultStopwatchVal,
-  };
-};
-
-
 class App extends React.Component {
   constructor(props) {
     super(props);
     const { data: { columns, rows } } = props;
     const dataColumns = columns || [
-      createFirstColumn(this.onUpdateName),
+      createFirstColumn(this.onUpdateName, this.onDeleteRow),
       createColumn('Stuffing', 1, this.onStopwatchChange, this.onUpdateHeader),
     ];
+
+    const dataRows = rows || [createRow(dataColumns.length - 1, 'Turkey baking')];
     const data = {
       columns: dataColumns,
-      rows: rows || [createRow(dataColumns.length - 1, 'Turkey baking')],
+      rows: dataRows,
     };
-    this.state = { data };
+
+    this.props.dispatch(receiveData(data));
   }
 
   componentWillUnmount() {
     localStorage.setItem('savable-timer-data', JSON.stringify(this.state.data));
-  }
-
-  onStopwatchChange = (newVal, colId, rowIdx) => {
-    const newRow = { ...this.state.data.rows[rowIdx] };
-    newRow[colId] = newVal;
-    const newRows = [...this.state.data.rows];
-    newRows[rowIdx] = newRow;
-    this.setState(merge({}, this.state, { data: { rows: newRows } }));
   }
 
   onUpdateHeader = (newHeader, colIdx) => {
@@ -81,32 +71,31 @@ class App extends React.Component {
   onUpdateName = (newName, rowIdx) => {
     const newRows = [...this.state.data.rows];
     newRows[rowIdx] = {
-      name: newName,
       ...newRows[rowIdx],
+      name: newName,
     };
     this.setState(merge({}, this.state, { data: { rows: newRows } }));
   }
 
+  onDeleteRow = (rowIdx) => {
+    const rows = this.state.data.rows.map(row => ({ ...row }));
+    if (rows.length === 1) return;
+
+    const newRows = rows.slice(0, rowIdx).concat(rows.slice(rowIdx + 1));
+    this.setState({
+      data: {
+        ...this.state.data,
+        rows: newRows,
+      },
+    });
+  }
+
   addRow = () => {
-    const newRow = createRow(this.state.data.columns.length - 1, 'Stopwatch name');
-    const newRows = this.state.data.rows.concat([newRow]);
-    this.setState(merge({}, this.state, { data: { rows: newRows } }));
+    this.props.dispatch(createNewRow(this.props.cols.length - 1));
   }
 
   addColumn = () => {
-    const { data: { columns, rows } } = this.state;
-    const newColumn = createColumn('Stopwatch Type', columns.length, this.onStopwatchChange);
-    const newColumns = columns.concat([newColumn]);
-    const newRows = rows.map(row => ({
-      [`col-${columns.length}`]: 0,
-      ...row,
-    }));
-    this.setState(merge({}, this.state, {
-      data: {
-        columns: newColumns,
-        rows: newRows,
-      },
-    }));
+    this.props.dispatch(createNewCol(this.props.cols.length));
   }
 
   toggleEditMode = () => {
@@ -118,17 +107,29 @@ class App extends React.Component {
       <div>
         <button onClick={this.addRow}>Add row</button>
         <button onClick={this.addColumn}>Add column</button>
-        <button onClick={this.toggleEditMode}>Edit</button>
-        <ReactTable
-          data={this.state.data.rows}
-          columns={this.state.data.columns}
-          pageSize={this.state.data.rows.length}
-          showPagination={false}
-          resizable={false}
-        />
+        <button
+          onClick={this.toggleEditMode}
+          className={this.props.editMode ? 'editing' : ''}
+        >Edit
+        </button>
+        {this.props.rows && this.props.cols &&
+          <ReactTable
+            data={this.props.rows}
+            columns={this.props.cols}
+            pageSize={this.props.rows.length}
+            showPagination={false}
+            resizable={false}
+          />
+        }
       </div>
     );
   }
 }
 
-export default connect()(App);
+const mapStateToProps = state => ({
+  editMode: state.editMode,
+  rows: state.rows,
+  cols: state.cols,
+});
+
+export default connect(mapStateToProps)(App);

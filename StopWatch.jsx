@@ -1,8 +1,10 @@
 /* eslint-disable react/prefer-stateless-function */
 /* eslint-disable class-methods-use-this */
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { receiveStopwatchTime } from './actions';
 
-export default class StopWatch extends Component {
+class StopWatch extends Component {
   constructor() {
     super();
     this.secondDivision = 10;
@@ -35,15 +37,8 @@ export default class StopWatch extends Component {
   }
 
   emit(newVal) {
-    const {
-      onChange,
-      column: { id: colId },
-      index: rowIdx,
-    } = this.props;
-
-    if (typeof onChange === 'function') {
-      onChange(newVal, colId, rowIdx);
-    }
+    const { column: { id: colId }, index: rowIdx } = this.props;
+    this.props.dispatch(receiveStopwatchTime(newVal, colId, rowIdx));
   }
 
   reset = () => {
@@ -72,3 +67,5 @@ export default class StopWatch extends Component {
     );
   }
 }
+
+export default connect()(StopWatch);
