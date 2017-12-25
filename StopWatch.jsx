@@ -1,21 +1,16 @@
 /* eslint-disable react/prefer-stateless-function */
 /* eslint-disable class-methods-use-this */
+
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { receiveStopwatchTime } from './actions';
+import { formatTime } from './utils';
 
 class StopWatch extends Component {
   constructor() {
     super();
     this.secondDivision = 10;
     this.stepSize = 1000 / this.secondDivision;
-  }
-
-  formatTime(days, hours, minutes, seconds) {
-    const fDays = days ? `${days}d` : '';
-    const fHours = days ? `${hours}h` : '';
-    const fMinutes = minutes ? `${minutes}m` : '';
-    return `${fDays} ${fHours} ${fMinutes} ${seconds}s`.trim();
   }
 
   humanReadableDuration = () => {
@@ -27,17 +22,19 @@ class StopWatch extends Component {
     const hours = value % 24;
     value = Math.floor(value / 24);
     const days = value;
-    return this.formatTime(days, hours, minutes, seconds);
+    return formatTime(days, hours, minutes, seconds);
   }
 
   pause = () => {
     clearInterval(this.interval);
     this.interval = null;
+    this.emit();
     this.forceUpdate();
   }
 
-  emit(newVal) {
+  emit() {
     const { column: { id: colId }, index: rowIdx } = this.props;
+    const newVal = new Date() - this.startTime;
     this.props.dispatch(receiveStopwatchTime(newVal, colId, rowIdx));
   }
 
@@ -49,9 +46,8 @@ class StopWatch extends Component {
   start = () => {
     if (this.interval) return;
 
-    this.interval = setInterval(() => {
-      this.emit(this.props.value + this.stepSize);
-    }, this.stepSize);
+    this.startTime = new Date();
+    this.interval = setInterval(() => { this.emit(); }, this.stepSize);
   }
 
   render() {

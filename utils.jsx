@@ -36,3 +36,10 @@ export const createRow = (numStopwatchCols, name) => {
     ...colIdToDefaultStopwatchVal,
   };
 };
+
+export const formatTime = (days, hours, minutes, seconds) => {
+  const fDays = days ? `${days}d` : '';
+  const fHours = days ? `${hours}h` : '';
+  const fMinutes = minutes ? `${minutes}m` : '';
+  return `${fDays} ${fHours} ${fMinutes} ${seconds}s`.trim();
+};
