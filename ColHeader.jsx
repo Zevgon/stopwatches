@@ -12,10 +12,18 @@ export default class ColHeader extends Component {
     };
   }
 
-  updateHeader = (e) => { this.setState({ header: e.target.value }); }
+  updateHeader = (e) => {
+    this.setState({ header: e.target.value });
+  }
+
+  handleKeyUp = (e) => {
+    if (e.which === 13) {
+      this.toggleEditHeader();
+    }
+  }
 
   toggleEditHeader = (e) => {
-    e.stopPropagation();
+    if (e) e.stopPropagation();
     this.setState({
       editingHeader: !this.state.editingHeader,
     }, () => {
@@ -38,11 +46,12 @@ export default class ColHeader extends Component {
             value={this.state.header}
             onChange={this.updateHeader}
             onClick={(e) => { e.stopPropagation(); }}
+            onKeyUp={this.handleKeyUp}
           /> :
-          <div>{header}</div>
+          <span>{header}</span>
         }
         <i
-          className="fa fa-pencil-square-o"
+          className={this.state.editingHeader ? 'fa fa-floppy-o' : 'fa fa-pencil-square-o'}
           onClick={this.toggleEditHeader}
         />
       </div>
