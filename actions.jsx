@@ -8,6 +8,8 @@ import {
   RECEIVE_STOPWATCH_NAME,
   DELETE_ROW,
   RECEIVE_STOPWATCH_TYPE,
+  RECEIVE_SESSION,
+  CREATE_NEW_SESSION,
 } from './constants';
 
 export const toggleEditMode = () => ({
@@ -52,4 +54,13 @@ export const receiveStopwatchType = (newType, colIdx) => ({
 export const deleteRow = rowIdx => ({
   type: DELETE_ROW,
   rowIdx,
+});
+
+export const receiveSession = session => ({
+  type: RECEIVE_SESSION,
+  session,
+});
+
+export const createNewSession = () => ({
+  type: CREATE_NEW_SESSION,
 });

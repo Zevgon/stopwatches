@@ -43,3 +43,9 @@ export const formatTime = (days, hours, minutes, seconds) => {
   const fMinutes = minutes ? `${minutes}m` : '';
   return `${fDays} ${fHours} ${fMinutes} ${seconds}s`.trim();
 };
+
+export const createDefaultSession = numSessions => ({
+  name: `Session ${numSessions + 1}`,
+  rows: [createRow(0, 'Turkey baking')],
+  cols: [createFirstColumn(), createColumn('Stuffing', 1)],
+});

@@ -1,18 +1,18 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { createStore, combineReducers } from 'redux';
+import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import App from './App';
 import {
   editModeReducer,
-  rowReducer,
-  colReducer,
+  sessionReducer,
+  sessionsReducer,
 } from './reducers';
 
-const store = createStore(combineReducers({
-  editMode: editModeReducer,
-  rows: rowReducer,
-  cols: colReducer,
+const store = createStore((state = {}, action) => ({
+  editMode: editModeReducer(state.editMode, action),
+  session: sessionReducer(state.session, action),
+  sessions: sessionsReducer(state.sessions, action, state),
 }));
 
 document.addEventListener('DOMContentLoaded', () => {
