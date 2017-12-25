@@ -2,8 +2,9 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
-export default class ColHeader extends Component {
+class ColHeader extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -41,6 +42,7 @@ export default class ColHeader extends Component {
   }
 
   render() {
+    console.log(this.props.editMode);
     const { header, editingHeader } = this.state;
     return (
       <div className="space-between">
@@ -64,3 +66,9 @@ export default class ColHeader extends Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  editMode: state.editMode,
+});
+
+export default connect(mapStateToProps)(ColHeader);

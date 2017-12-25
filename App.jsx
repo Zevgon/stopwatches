@@ -2,6 +2,8 @@ import React from 'react';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import { merge } from 'lodash';
+import { connect } from 'react-redux';
+import { toggleEditMode } from './actions';
 import StopWatch from './StopWatch';
 import ColHeader from './ColHeader';
 import RowHeader from './RowHeader';
@@ -43,13 +45,13 @@ const createRow = (numStopwatchCols, name) => {
 };
 
 
-export default class App extends React.Component {
+class App extends React.Component {
   constructor(props) {
     super(props);
     const { data: { columns, rows } } = props;
     const dataColumns = columns || [
       createFirstColumn(this.onUpdateName),
-      createColumn('Stopwatch Type', 1, this.onStopwatchChange, this.onUpdateHeader),
+      createColumn('Stuffing', 1, this.onStopwatchChange, this.onUpdateHeader),
     ];
     const data = {
       columns: dataColumns,
@@ -107,11 +109,16 @@ export default class App extends React.Component {
     }));
   }
 
+  toggleEditMode = () => {
+    this.props.dispatch(toggleEditMode());
+  }
+
   render() {
     return (
       <div>
         <button onClick={this.addRow}>Add row</button>
         <button onClick={this.addColumn}>Add column</button>
+        <button onClick={this.toggleEditMode}>Edit</button>
         <ReactTable
           data={this.state.data.rows}
           columns={this.state.data.columns}
@@ -123,3 +130,5 @@ export default class App extends React.Component {
     );
   }
 }
+
+export default connect()(App);
