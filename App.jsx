@@ -3,14 +3,21 @@ import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import { merge } from 'lodash';
 import StopWatch from './StopWatch';
+import ColHeader from './ColHeader';
 
 const FIRST_COLUMN = {
   Header: 'Name',
   accessor: 'name',
 };
 
-const createColumn = (Header, colIdx, onStopwatchChange) => ({
-  Header,
+const createColumn = (header, colIdx, onStopwatchChange, onUpdateHeader) => ({
+  Header: () => (
+    <ColHeader
+      header={header}
+      colIdx={colIdx}
+      onUpdateHeader={onUpdateHeader}
+    />
+  ),
   accessor: `col-${colIdx}`,
   Cell: props => <StopWatch onChange={onStopwatchChange} {...props} />,
 });
@@ -38,7 +45,10 @@ export default class App extends React.Component {
     const { data: { columns, rows } } = props;
     const data = {
       columns: columns ||
-        [FIRST_COLUMN, createColumn('Type', 1, this.onStopwatchChange)],
+        [
+          FIRST_COLUMN,
+          createColumn('Stopwatch Type', 1, this.onStopwatchChange, this.onUpdateHeader),
+        ],
       rows: rows || [EXAMPLE_TIMER],
     };
     this.state = { data };
@@ -56,6 +66,12 @@ export default class App extends React.Component {
     this.setState(merge({}, this.state, { data: { rows: newRows } }));
   }
 
+  onUpdateHeader = (newHeader, colIdx) => {
+    const newCols = [...this.state.data.columns];
+    newCols[colIdx] = createColumn(newHeader, colIdx, this.onStopwatchChange, this.onUpdateHeader);
+    this.setState(merge({}, this.state, { data: { columns: newCols } }));
+  }
+
   addRow = () => {
     const newRow = createRow(this.state.data.columns.length - 1);
     const newRows = this.state.data.rows.concat([newRow]);
@@ -64,7 +80,7 @@ export default class App extends React.Component {
 
   addColumn = () => {
     const { data: { columns, rows } } = this.state;
-    const newColumn = createColumn('Type', columns.length, this.onStopwatchChange);
+    const newColumn = createColumn('Stopwatch Type', columns.length, this.onStopwatchChange);
     const newColumns = columns.concat([newColumn]);
     const newRows = rows.map(row => ({
       [`col-${columns.length}`]: 0,
