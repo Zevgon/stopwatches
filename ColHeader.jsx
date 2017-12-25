@@ -27,7 +27,11 @@ export default class ColHeader extends Component {
     this.setState({
       editingHeader: !this.state.editingHeader,
     }, () => {
-      if (this.state.editingHeader) return;
+      if (this.state.editingHeader) {
+        this.inputNode.focus();
+        this.inputNode.select();
+        return;
+      }
 
       const { onUpdateHeader } = this.props;
       if (typeof onUpdateHeader === 'function') {
@@ -39,9 +43,11 @@ export default class ColHeader extends Component {
   render() {
     const { header, editingHeader } = this.state;
     return (
-      <div>
+      <div className="space-between">
+        <div />
         {editingHeader ?
           <input
+            ref={(node) => { this.inputNode = node; }}
             type="text"
             value={this.state.header}
             onChange={this.updateHeader}

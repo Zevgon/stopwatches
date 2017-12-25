@@ -61,12 +61,12 @@ export default class StopWatch extends Component {
 
   render() {
     return (
-      <div>
-        {this.humanReadableDuration()}
+      <div className="space-between">
         {this.interval ?
           <button onClick={this.pause}>Stop</button> :
           <button onClick={this.start}>Start</button>
         }
+        {this.humanReadableDuration()}
         <button onClick={this.reset}>Reset</button>
       </div>
     );

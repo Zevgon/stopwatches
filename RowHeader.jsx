@@ -17,7 +17,11 @@ export default class RowHeader extends Component {
     this.setState({
       editingName: !this.state.editingName,
     }, () => {
-      if (this.state.editingName) return;
+      if (this.state.editingName) {
+        this.inputNode.focus();
+        this.inputNode.select();
+        return;
+      }
 
       const { onUpdateName } = this.props;
       if (typeof onUpdateName === 'function') {
@@ -37,9 +41,10 @@ export default class RowHeader extends Component {
   render() {
     const { name, editingName } = this.state;
     return (
-      <div>
+      <div className="space-between">
         {editingName ?
           <input
+            ref={(node) => { this.inputNode = node; }}
             type="text"
             value={this.state.name}
             onChange={this.updateName}

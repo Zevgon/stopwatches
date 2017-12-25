@@ -5,6 +5,7 @@ import { merge } from 'lodash';
 import StopWatch from './StopWatch';
 import ColHeader from './ColHeader';
 import RowHeader from './RowHeader';
+import './master.css';
 
 const createFirstColumn = onUpdateName => ({
   Header: 'Name',
@@ -31,13 +32,13 @@ const createColumn = (header, colIdx, onStopwatchChange, onUpdateHeader) => ({
 });
 
 const createRow = (numStopwatchCols, name) => {
-  const defaultStopwatchCols = {};
+  const colIdToDefaultStopwatchVal = {};
   for (let i = 0; i < numStopwatchCols; i += 1) {
-    defaultStopwatchCols[`col-${i + 1}`] = 0;
+    colIdToDefaultStopwatchVal[`col-${i + 1}`] = 0;
   }
   return {
     name,
-    ...defaultStopwatchCols,
+    ...colIdToDefaultStopwatchVal,
   };
 };
 
@@ -116,6 +117,7 @@ export default class App extends React.Component {
           columns={this.state.data.columns}
           pageSize={this.state.data.rows.length}
           showPagination={false}
+          resizable={false}
         />
       </div>
     );
