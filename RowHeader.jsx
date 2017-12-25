@@ -25,10 +25,9 @@ class RowHeader extends Component {
       if (this.state.editingName) {
         this.inputNode.focus();
         this.inputNode.select();
-        return;
+      } else {
+        this.props.dispatch(receiveStopwatchName(this.state.name, this.props.index));
       }
-
-      this.props.dispatch(receiveStopwatchName(this.state.name, this.props.index));
     });
   }
 
@@ -37,10 +36,6 @@ class RowHeader extends Component {
   handleKeyUp = (e) => { if (e.which === 13) { this.toggleEditName(); } }
 
   deleteRow = () => {
-    // const { onDeleteRow } = this.props;
-    // if (typeof onDeleteRow === 'function') {
-    //   onDeleteRow(this.props.index);
-    // }
     this.props.dispatch(deleteRow(this.props.index));
   }
 

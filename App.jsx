@@ -20,6 +20,7 @@ const createFirstColumn = (onUpdateName, onDeleteRow) => ({
   accessor: 'name',
   Cell: ({ value, ...rest }) => (
     <RowHeader
+      key={value}
       name={value}
       onUpdateName={onUpdateName}
       onDeleteRow={onDeleteRow}
