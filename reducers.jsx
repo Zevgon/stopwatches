@@ -77,7 +77,15 @@ export const colReducer = (state = [], action) => {
   }
 };
 
-export const sessionReducer = (state = null, action) => {
+export const sessionReducer = (state = null, action, root) => {
+  if (state && root && root.session !== undefined) {
+    state = {
+      ...state,
+      cols: colReducer(state.cols, action),
+      rows: rowReducer(state.rows, action),
+    };
+  }
+
   switch (action.type) {
     case RECEIVE_SESSION:
       return action.session;
@@ -89,56 +97,22 @@ export const sessionReducer = (state = null, action) => {
 };
 
 export const sessionsReducer = (state = [], action, root) => {
+  if (root.session === undefined) return state;
+
+  if (action.type.match(/-rows-|-cols-/)) {
+    state = [
+      ...state.slice(0, root.session),
+      sessionReducer(state[root.session], action, root),
+      ...state.slice(root.session + 1),
+    ];
+  }
+
   switch (action.type) {
     case RECEIVE_DATA:
       return action.data.sessions;
     case CREATE_NEW_SESSION: {
       const newSessions = cloneDeep(state);
       newSessions.push(createDefaultSession(newSessions.length));
-      return newSessions;
-    }
-    case CREATE_NEW_ROW: {
-      if (root.session === undefined) return state;
-
-      const newSessions = cloneDeep(state);
-      newSessions[root.session].rows = newSessions[root.session].rows.concat([
-        createRow(action.numStopwatchCols, 'Stopwatch name')]);
-      return newSessions;
-    }
-    case CREATE_NEW_COL: {
-      if (root.session === undefined) return state;
-
-      const newSessions = cloneDeep(state);
-      newSessions[root.session].cols = newSessions[root.session].cols.map(row => ({
-        [`col-${action.numCols}`]: 0,
-        ...row,
-      }));
-      return newSessions;
-    }
-
-    case RECEIVE_STOPWATCH_TIME: {
-      if (root.session === undefined) return state;
-
-      const newSessions = cloneDeep(state);
-      newSessions[root.session].rows[action.rowIdx][action.colId] = action.newTime;
-      return newSessions;
-    }
-    case RECEIVE_STOPWATCH_NAME: {
-      if (root.session === undefined) return state;
-
-      const newSessions = cloneDeep(state);
-      const newRows = newSessions[root.session].rows;
-      newRows[action.rowIdx].name = action.newName;
-      return newSessions;
-    }
-    case DELETE_ROW: {
-      if (root.session === undefined) return state;
-
-      const newSessions = cloneDeep(state);
-      let newRows = newSessions[root.session].rows;
-      if (newRows.length === 1) return state;
-      newRows = newRows.slice(0, action.rowIdx).concat(newRows.slice(action.rowIdx + 1));
-      newSessions[root.session].rows = newRows;
       return newSessions;
     }
     default:
