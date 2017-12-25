@@ -77,6 +77,7 @@ class App extends React.Component {
             <button
               key={session.name}
               onClick={() => this.updateSession(idx)}
+              className={idx === this.props.session ? 'blue' : ''}
             >{session.name}
             </button>
           ))}
@@ -88,7 +89,7 @@ class App extends React.Component {
             <button onClick={this.addColumn}>Add column</button>
             <button
               onClick={this.toggleEditMode}
-              className={this.props.editMode ? 'editing' : ''}
+              className={this.props.editMode ? 'blue' : ''}
             >Edit
             </button>
             {this.props.rows && this.props.cols &&

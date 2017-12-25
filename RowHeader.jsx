@@ -44,6 +44,13 @@ class RowHeader extends Component {
     const { editMode } = this.props;
     return (
       <div className="space-between">
+        {editMode ?
+          <i
+            className={this.state.editingName ? 'fa fa-floppy-o' : 'fa fa-pencil-square-o'}
+            onClick={this.toggleEditName}
+          />
+          : <div />
+        }
         {editingName ?
           <input
             ref={(node) => { this.inputNode = node; }}
@@ -58,10 +65,6 @@ class RowHeader extends Component {
         {editMode ?
           <div className="space-between">
             <button onClick={this.deleteRow}>Delete Row</button>
-            <i
-              className={this.state.editingName ? 'fa fa-floppy-o' : 'fa fa-pencil-square-o'}
-              onClick={this.toggleEditName}
-            />
           </div>
           : <div />
         }

@@ -52,7 +52,7 @@ class StopWatch extends Component {
 
   render() {
     return (
-      <div className="space-between">
+      <div className="space-around">
         {this.interval ?
           <button onClick={this.pause}>Stop</button> :
           <button onClick={this.start}>Start</button>

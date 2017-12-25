@@ -8,7 +8,12 @@ body, button, div {
   justify-content: space-between;
 }
 
-button.editing {
+.space-around {
+  display: flex;
+  justify-content: space-around;
+}
+
+button.blue {
   background-color: blue;
   color: white;
 }

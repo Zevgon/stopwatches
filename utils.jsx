@@ -46,6 +46,6 @@ export const formatTime = (days, hours, minutes, seconds) => {
 
 export const createDefaultSession = numSessions => ({
   name: `Session ${numSessions + 1}`,
-  rows: [createRow(0, 'Turkey baking')],
+  rows: [createRow(1, 'Turkey baking')],
   cols: [createFirstColumn(), createColumn('Stuffing', 1)],
 });
