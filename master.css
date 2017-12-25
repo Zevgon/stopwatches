@@ -12,3 +12,15 @@ button.editing {
   background-color: blue;
   color: white;
 }
+
+.table-container-border {
+  border-radius: 55px;
+  padding: 6px;
+  border: 3px solid gray;
+}
+
+.table-container {
+  border: 3px solid gray;
+  padding: 30px;
+  border-radius: 50px;
+}

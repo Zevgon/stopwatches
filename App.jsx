@@ -51,23 +51,25 @@ class App extends React.Component {
 
   render() {
     return (
-      <div>
-        <button onClick={this.addRow}>Add row</button>
-        <button onClick={this.addColumn}>Add column</button>
-        <button
-          onClick={this.toggleEditMode}
-          className={this.props.editMode ? 'editing' : ''}
-        >Edit
-        </button>
-        {this.props.rows && this.props.cols &&
-          <ReactTable
-            data={this.props.rows}
-            columns={this.props.cols}
-            pageSize={this.props.rows.length}
-            showPagination={false}
-            resizable={false}
-          />
-        }
+      <div className="table-container-border">
+        <div className="table-container">
+          <button onClick={this.addRow}>Add row</button>
+          <button onClick={this.addColumn}>Add column</button>
+          <button
+            onClick={this.toggleEditMode}
+            className={this.props.editMode ? 'editing' : ''}
+          >Edit
+          </button>
+          {this.props.rows && this.props.cols &&
+            <ReactTable
+              data={this.props.rows}
+              columns={this.props.cols}
+              pageSize={this.props.rows.length}
+              showPagination={false}
+              resizable={false}
+            />
+          }
+        </div>
       </div>
     );
   }
