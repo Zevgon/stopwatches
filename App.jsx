@@ -6,7 +6,7 @@ import StopWatch from './StopWatch';
 
 const FIRST_COLUMN = {
   Header: 'Name',
-  accessor: 'type',
+  accessor: 'name',
 };
 
 const createColumn = (Header, colIdx, onStopwatchChange) => ({
@@ -16,7 +16,7 @@ const createColumn = (Header, colIdx, onStopwatchChange) => ({
 });
 
 const EXAMPLE_TIMER = {
-  type: 'Turkey baking',
+  name: 'Turkey baking',
   'col-1': 0,
 };
 
@@ -26,7 +26,7 @@ const createRow = (numStopwatchCols) => {
     defaultStopwatchCols[`col-${i + 1}`] = 0;
   }
   return {
-    type: 'Stopwatch name',
+    name: 'Stopwatch name',
     ...defaultStopwatchCols,
   };
 };
@@ -35,10 +35,11 @@ const createRow = (numStopwatchCols) => {
 export default class App extends React.Component {
   constructor(props) {
     super(props);
+    const { data: { columns, rows } } = props;
     const data = {
-      columns: props.data.columns ? props.data.columns :
+      columns: columns ||
         [FIRST_COLUMN, createColumn('Type', 1, this.onStopwatchChange)],
-      rows: props.data.rows ? props.data.rows : [EXAMPLE_TIMER],
+      rows: rows || [EXAMPLE_TIMER],
     };
     this.state = { data };
   }
@@ -56,21 +57,38 @@ export default class App extends React.Component {
   }
 
   addRow = () => {
-    const newRow = createRow(1);
+    const newRow = createRow(this.state.data.columns.length - 1);
     const newRows = this.state.data.rows.concat([newRow]);
     this.setState(merge({}, this.state, { data: { rows: newRows } }));
+  }
+
+  addColumn = () => {
+    const { data: { columns, rows } } = this.state;
+    const newColumn = createColumn('Type', columns.length, this.onStopwatchChange);
+    const newColumns = columns.concat([newColumn]);
+    const newRows = rows.map(row => ({
+      [`col-${columns.length}`]: 0,
+      ...row,
+    }));
+    this.setState(merge({}, this.state, {
+      data: {
+        columns: newColumns,
+        rows: newRows,
+      },
+    }));
   }
 
   render() {
     return (
       <div>
+        <button onClick={this.addRow}>Add row</button>
+        <button onClick={this.addColumn}>Add column</button>
         <ReactTable
           data={this.state.data.rows}
           columns={this.state.data.columns}
           pageSize={this.state.data.rows.length}
           showPagination={false}
         />
-        <button onClick={this.addRow}>Add row</button>
       </div>
     );
   }

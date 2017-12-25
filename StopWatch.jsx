@@ -25,7 +25,6 @@ export default class StopWatch extends Component {
     const hours = value % 24;
     value = Math.floor(value / 24);
     const days = value;
-    // return `${days}d ${hours}h ${minutes}m ${seconds}s`;
     return this.formatTime(days, hours, minutes, seconds);
   }
 
