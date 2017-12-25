@@ -42,8 +42,8 @@ class ColHeader extends Component {
   }
 
   render() {
-    console.log(this.props.editMode);
     const { header, editingHeader } = this.state;
+    const { editMode } = this.props;
     return (
       <div className="space-between">
         <div />
@@ -58,10 +58,12 @@ class ColHeader extends Component {
           /> :
           <span>{header}</span>
         }
-        <i
-          className={this.state.editingHeader ? 'fa fa-floppy-o' : 'fa fa-pencil-square-o'}
-          onClick={this.toggleEditHeader}
-        />
+        {editMode ?
+          <i
+            className={this.state.editingHeader ? 'fa fa-floppy-o' : 'fa fa-pencil-square-o'}
+            onClick={this.toggleEditHeader}
+          /> : <div />
+        }
       </div>
     );
   }

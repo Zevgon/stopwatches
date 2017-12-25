@@ -2,8 +2,9 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
-export default class RowHeader extends Component {
+class RowHeader extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -40,6 +41,7 @@ export default class RowHeader extends Component {
 
   render() {
     const { name, editingName } = this.state;
+    const { editMode } = this.props;
     return (
       <div className="space-between">
         {editingName ?
@@ -53,11 +55,19 @@ export default class RowHeader extends Component {
           /> :
           <span>{name}</span>
         }
-        <i
-          className={this.state.editingName ? 'fa fa-floppy-o' : 'fa fa-pencil-square-o'}
-          onClick={this.toggleEditName}
-        />
+        {editMode ?
+          <i
+            className={this.state.editingName ? 'fa fa-floppy-o' : 'fa fa-pencil-square-o'}
+            onClick={this.toggleEditName}
+          /> : <div />
+        }
       </div>
     );
   }
 }
+
+const mapStateToProps = state => ({
+  editMode: state.editMode,
+});
+
+export default connect(mapStateToProps)(RowHeader);
