@@ -56,16 +56,6 @@ export default class StopWatch extends Component {
     if (this.interval) return;
 
     this.interval = setInterval(() => {
-      // const {
-      //   onChange,
-      //   value,
-      //   column: { id: colId },
-      //   index: rowIdx,
-      // } = this.props;
-      //
-      // if (typeof onChange === 'function') {
-      //   onChange(value + this.stepSize, colId, rowIdx);
-      // }
       this.emit(this.props.value + this.stepSize);
     }, this.stepSize);
   }

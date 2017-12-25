@@ -20,6 +20,17 @@ const EXAMPLE_TIMER = {
   'col-1': 0,
 };
 
+const createRow = (numStopwatchCols) => {
+  const defaultStopwatchCols = {};
+  for (let i = 0; i < numStopwatchCols; i += 1) {
+    defaultStopwatchCols[`col-${i + 1}`] = 0;
+  }
+  return {
+    type: 'Stopwatch name',
+    ...defaultStopwatchCols,
+  };
+};
+
 
 export default class App extends React.Component {
   constructor(props) {
@@ -44,14 +55,23 @@ export default class App extends React.Component {
     this.setState(merge({}, this.state, { data: { rows: newRows } }));
   }
 
+  addRow = () => {
+    const newRow = createRow(1);
+    const newRows = this.state.data.rows.concat([newRow]);
+    this.setState(merge({}, this.state, { data: { rows: newRows } }));
+  }
+
   render() {
     return (
-      <ReactTable
-        data={this.state.data.rows}
-        columns={this.state.data.columns}
-        defaultPageSize={1}
-        showPagination={false}
-      />
+      <div>
+        <ReactTable
+          data={this.state.data.rows}
+          columns={this.state.data.columns}
+          pageSize={this.state.data.rows.length}
+          showPagination={false}
+        />
+        <button onClick={this.addRow}>Add row</button>
+      </div>
     );
   }
 }
