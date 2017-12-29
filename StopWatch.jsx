@@ -11,6 +11,7 @@ class StopWatch extends Component {
     super();
     this.secondDivision = 10;
     this.stepSize = 1000 / this.secondDivision;
+    this.existingMss = 0;
   }
 
   humanReadableDuration = () => {
@@ -28,18 +29,19 @@ class StopWatch extends Component {
   pause = () => {
     clearInterval(this.interval);
     this.interval = null;
-    this.emit();
+    this.emit(new Date() - this.startTime);
     this.forceUpdate();
+    this.existingMss = this.props.value;
   }
 
-  emit() {
+  emit(newVal) {
     const { column: { id: colId }, index: rowIdx } = this.props;
-    const newVal = new Date() - this.startTime;
-    this.props.dispatch(receiveStopwatchTime(newVal, colId, rowIdx));
+    this.props.dispatch(receiveStopwatchTime(newVal + this.existingMss, colId, rowIdx));
   }
 
   reset = () => {
     this.pause();
+    this.existingMss = 0;
     this.emit(0);
   }
 
@@ -47,7 +49,9 @@ class StopWatch extends Component {
     if (this.interval) return;
 
     this.startTime = new Date();
-    this.interval = setInterval(() => { this.emit(); }, this.stepSize);
+    this.interval = setInterval(() => {
+      this.emit(new Date() - this.startTime);
+    }, this.stepSize);
   }
 
   render() {

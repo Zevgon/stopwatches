@@ -14872,12 +14872,14 @@ var StopWatch = function (_Component) {
     _this.pause = function () {
       clearInterval(_this.interval);
       _this.interval = null;
-      _this.emit();
+      _this.emit(new Date() - _this.startTime);
       _this.forceUpdate();
+      _this.existingMss = _this.props.value;
     };
 
     _this.reset = function () {
       _this.pause();
+      _this.existingMss = 0;
       _this.emit(0);
     };
 
@@ -14886,24 +14888,24 @@ var StopWatch = function (_Component) {
 
       _this.startTime = new Date();
       _this.interval = setInterval(function () {
-        _this.emit();
+        _this.emit(new Date() - _this.startTime);
       }, _this.stepSize);
     };
 
     _this.secondDivision = 10;
     _this.stepSize = 1000 / _this.secondDivision;
+    _this.existingMss = 0;
     return _this;
   }
 
   _createClass(StopWatch, [{
     key: 'emit',
-    value: function emit() {
+    value: function emit(newVal) {
       var _props = this.props,
           colId = _props.column.id,
           rowIdx = _props.index;
 
-      var newVal = new Date() - this.startTime;
-      this.props.dispatch((0, _actions.receiveStopwatchTime)(newVal, colId, rowIdx));
+      this.props.dispatch((0, _actions.receiveStopwatchTime)(newVal + this.existingMss, colId, rowIdx));
     }
   }, {
     key: 'render',
@@ -15107,7 +15109,7 @@ exports = module.exports = __webpack_require__(35)(undefined);
 
 
 // module
-exports.push([module.i, "body, button, div {\n  outline: none;\n}\n\n\n.space-between {\n  display: flex;\n  justify-content: space-between;\n}\n\n.space-around {\n  display: flex;\n  justify-content: space-around;\n}\n\nbutton.blue {\n  background-color: blue;\n  color: white;\n}\n\n.table-container-border {\n  border-radius: 55px;\n  padding: 6px;\n  border: 3px solid gray;\n}\n\n.table-container {\n  border: 3px solid gray;\n  padding: 30px;\n  border-radius: 50px;\n}\n", ""]);
+exports.push([module.i, "body, button, div {\n  outline: none;\n}\n\nbutton {\n  width: 200px;\n  height: 47px;\n  font-size: 18px;\n}\n\n.space-between {\n  display: flex;\n  justify-content: space-between;\n}\n\n.space-around {\n  display: flex;\n  justify-content: space-around;\n}\n\nbutton.blue {\n  background-color: blue;\n  color: white;\n}\n\n.table-container-border {\n  border-radius: 55px;\n  padding: 6px;\n  border: 3px solid gray;\n}\n\n.table-container {\n  border: 3px solid gray;\n  padding: 30px;\n  border-radius: 50px;\n}\n", ""]);
 
 // exports
 

@@ -2,6 +2,11 @@ body, button, div {
   outline: none;
 }
 
+button {
+  width: 200px;
+  height: 47px;
+  font-size: 18px;
+}
 
 .space-between {
   display: flex;
