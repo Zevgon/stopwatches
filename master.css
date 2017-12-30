@@ -34,3 +34,10 @@ button.blue {
   padding: 30px;
   border-radius: 50px;
 }
+
+.stopwatch-time {
+  display: flex;
+  justify-content: space-around;
+  font-size: 20px;
+  align-items: center;
+}
